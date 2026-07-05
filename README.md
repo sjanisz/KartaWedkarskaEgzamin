@@ -43,3 +43,34 @@ To deploy to a static host:
 
 1. Build the app: `npm run build`
 2. Upload the contents of `dist/` to any static hosting provider (e.g. GitHub Pages, Netlify, Vercel)
+
+## GitHub Pages deployment
+
+The app is configured for GitHub Pages at `/KartaWedkarskaEgzamin/` (set via `base` in `vite.config.js`).
+
+### First-time setup
+
+1. Install the deploy tool (already done if `gh-pages` is in devDependencies):
+   ```bash
+   npm install --save-dev gh-pages
+   ```
+
+2. Ensure `package.json` has these scripts (already configured):
+   ```json
+   "predeploy": "npm run build",
+   "deploy": "gh-pages -d dist"
+   ```
+
+3. In your GitHub repo → **Settings** → **Pages**:
+   - Source: **Deploy from a branch**
+   - Branch: `gh-pages` / `/ (root)`
+   - Save
+
+### Deploy / redeploy
+
+```bash
+npm run deploy
+```
+
+This builds the app and pushes `dist/` to the `gh-pages` branch automatically.  
+The site will be live at `https://<your-username>.github.io/KartaWedkarskaEgzamin/`.
