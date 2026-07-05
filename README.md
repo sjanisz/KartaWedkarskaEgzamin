@@ -2,6 +2,8 @@
 
 A study aid for candidates preparing for the Polish fishing licence exam (karta wędkarska).
 
+![alt text](readme/images/overview.JPG)
+
 ## Getting Started
 
 ### Requirements
