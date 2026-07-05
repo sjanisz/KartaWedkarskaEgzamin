@@ -13,11 +13,13 @@ function shuffleArray(arr) {
 
 const sortedAlpha = [...fishes].sort((a, b) => a.name.localeCompare(b.name, 'pl'))
 
+const BASE = import.meta.env.BASE_URL
+
 // Preload all fish images on module load so they are cached before the user navigates to them
 fishes.forEach((f) => {
   if (f.image) {
     const img = new Image()
-    img.src = f.image
+    img.src = BASE + f.image.slice(1)
   }
 })
 
@@ -197,7 +199,7 @@ export default function GaleriaRyb() {
               )}
               <img
                 key={fish.image}
-                src={fish.image}
+                src={BASE + fish.image.slice(1)}
                 alt={fish.name}
                 className="fish-image"
                 style={{ display: imageLoaded ? 'block' : 'none' }}
