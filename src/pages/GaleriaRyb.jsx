@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import fishes from '../data/fishes'
 import './GaleriaRyb.css'
 
@@ -18,12 +18,15 @@ export default function GaleriaRyb() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [revealed, setRevealed] = useState(false)
   const [shuffled, setShuffled] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   const fish = list[currentIndex]
 
   function goTo(index) {
     setCurrentIndex(index)
     setRevealed(false)
+    setImageLoaded(false)
   }
 
   function goPrev() {
@@ -33,6 +36,20 @@ export default function GaleriaRyb() {
   function goNext() {
     goTo((currentIndex + 1) % list.length)
   }
+
+  function goToById(id) {
+    const idx = list.findIndex(f => f.id === id)
+    if (idx !== -1) goTo(idx)
+  }
+
+  useEffect(() => {
+    function handleKey(e) {
+      if (e.key === 'ArrowLeft') goPrev()
+      if (e.key === 'ArrowRight') goNext()
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [currentIndex, list])
 
   function toggleShuffle() {
     if (shuffled) {
@@ -46,7 +63,48 @@ export default function GaleriaRyb() {
   }
 
   return (
-    <div className="galeria-container">
+    <div className="galeria-page">
+
+      {/* Side panel */}
+      <div className={`galeria-sidebar${sidebarOpen ? ' open' : ''}`}>
+        <div className="sidebar-inner">
+          <div className="sidebar-header">
+            <span className="sidebar-title">Wszystkie ryby ({sortedAlpha.length})</span>
+            <button className="sidebar-close" onClick={() => setSidebarOpen(false)} aria-label="Zamknij panel">✕</button>
+          </div>
+          <ul className="sidebar-list">
+            {sortedAlpha.map((f) => {
+              const idxInList = list.findIndex(item => item.id === f.id)
+              const isActive = list[currentIndex]?.id === f.id
+              return (
+                <li
+                  key={f.id}
+                  className={`sidebar-item${isActive ? ' active' : ''}`}
+                  onClick={() => goToById(f.id)}
+                >
+                  <span className="sidebar-fish-name">{f.name}</span>
+                  <span className="sidebar-fish-latin">{f.nazwaLacinska}</span>
+                  <div className="sidebar-fish-meta">
+                    <span><span className="sidebar-meta-label">📏 Wymiar:</span> {f.wymiarOchronny}</span>
+                    <span><span className="sidebar-meta-label">🗓 Okres ochronny:</span> {f.okresOchronny || 'Brak okresu ochronnego'}</span>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      </div>
+
+      {/* Sidebar toggle tab */}
+      <button
+        className={`sidebar-toggle-tab${sidebarOpen ? ' open' : ''}`}
+        onClick={() => setSidebarOpen(s => !s)}
+        title={sidebarOpen ? 'Zamknij listę ryb' : 'Otwórz listę ryb'}
+      >
+        {sidebarOpen ? '▶' : '◀'}
+      </button>
+
+      <div className="galeria-container">
       <div className="galeria-header">
         <h1 className="galeria-title">Galeria Ryb</h1>
         <button
@@ -75,7 +133,22 @@ export default function GaleriaRyb() {
           title={revealed ? 'Kliknij, aby ukryć' : 'Kliknij, aby odkryć odpowiedzi'}
         >
           {fish.image ? (
-            <img src={fish.image} alt={fish.name} className="fish-image" />
+            <>
+              {!imageLoaded && (
+                <div className="fish-loading">
+                  <div className="fish-spinner" />
+                  <span>Wczytywanie...</span>
+                </div>
+              )}
+              <img
+                key={fish.image}
+                src={fish.image}
+                alt={fish.name}
+                className="fish-image"
+                style={{ display: imageLoaded ? 'block' : 'none' }}
+                onLoad={() => setImageLoaded(true)}
+              />
+            </>
           ) : (
             <div className="fish-placeholder">
               🐟
@@ -140,6 +213,8 @@ export default function GaleriaRyb() {
           />
         ))}
       </div>
+    </div>
+
     </div>
   )
 }
