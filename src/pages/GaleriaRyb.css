@@ -348,7 +348,7 @@
   overflow: hidden;
   background: #fff;
   box-shadow: -4px 0 24px rgba(26, 107, 154, 0.18);
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, top 0.1s ease, height 0.1s ease;
   z-index: 100;
 }
 

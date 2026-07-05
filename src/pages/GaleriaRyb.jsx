@@ -23,6 +23,17 @@ export default function GaleriaRyb() {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [revealAll, setRevealAll] = useState(false)
   const activeItemRef = useRef(null)
+  const NAVBAR_HEIGHT = 60
+
+  const [sidebarTop, setSidebarTop] = useState(NAVBAR_HEIGHT)
+
+  useEffect(() => {
+    function handleScroll() {
+      setSidebarTop(Math.max(0, NAVBAR_HEIGHT - window.scrollY))
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const showAnswers = revealAll || revealed
 
@@ -77,7 +88,10 @@ export default function GaleriaRyb() {
     <div className={`galeria-page${sidebarDocked && sidebarOpen ? ' docked' : ''}`}>
 
       {/* Side panel */}
-      <div className={`galeria-sidebar${sidebarOpen ? ' open' : ''}${sidebarDocked ? ' docked' : ''}`}>
+      <div
+        className={`galeria-sidebar${sidebarOpen ? ' open' : ''}${sidebarDocked ? ' docked' : ''}`}
+        style={sidebarDocked ? {} : { top: sidebarTop, height: `calc(100vh - ${sidebarTop}px)` }}
+      >
         <div className="sidebar-inner">
           <div className="sidebar-header">
             <span className="sidebar-title">Wszystkie ryby ({sortedAlpha.length})</span>
@@ -118,6 +132,7 @@ export default function GaleriaRyb() {
       {/* Sidebar toggle tab */}
       <button
         className={`sidebar-toggle-tab${sidebarOpen ? ' open' : ''}${sidebarDocked && sidebarOpen ? ' docked' : ''}`}
+        style={sidebarDocked ? {} : { top: `calc(50vh - ${(60 - sidebarTop) / 2}px)` }}
         onClick={() => { if (sidebarOpen) { setSidebarOpen(false); setSidebarDocked(false) } else { setSidebarOpen(true) } }}
         title={sidebarOpen ? 'Zamknij listę ryb' : 'Otwórz listę ryb'}
       >
