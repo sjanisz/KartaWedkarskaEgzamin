@@ -13,6 +13,14 @@ function shuffleArray(arr) {
 
 const sortedAlpha = [...fishes].sort((a, b) => a.name.localeCompare(b.name, 'pl'))
 
+// Preload all fish images on module load so they are cached before the user navigates to them
+fishes.forEach((f) => {
+  if (f.image) {
+    const img = new Image()
+    img.src = f.image
+  }
+})
+
 export default function GaleriaRyb() {
   const [list, setList] = useState(sortedAlpha)
   const [currentIndex, setCurrentIndex] = useState(0)
