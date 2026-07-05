@@ -1,0 +1,51 @@
+.linki-container {
+  max-width: 760px;
+  margin: 2.5rem auto;
+  padding: 0 1rem;
+}
+
+.linki-title {
+  font-size: 2rem;
+  color: #1a6b9a;
+  margin-bottom: 1.75rem;
+}
+
+.linki-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.linki-item {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(26, 107, 154, 0.12);
+  padding: 1.1rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: box-shadow 0.2s;
+}
+
+.linki-item:hover {
+  box-shadow: 0 4px 20px rgba(26, 107, 154, 0.22);
+}
+
+.linki-link {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a6b9a;
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+.linki-link:hover {
+  text-decoration: underline;
+}
+
+.linki-url {
+  font-size: 0.75rem;
+  color: #8aacbf;
+  word-break: break-all;
+}

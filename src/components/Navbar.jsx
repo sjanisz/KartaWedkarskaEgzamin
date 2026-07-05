@@ -2,6 +2,7 @@ import './Navbar.css'
 
 const tabs = [
   { id: 'galeria', label: 'Galeria Ryb' },
+  { id: 'linki', label: 'Przydatne linki' },
 ]
 
 export default function Navbar({ activeTab, onTabChange }) {
