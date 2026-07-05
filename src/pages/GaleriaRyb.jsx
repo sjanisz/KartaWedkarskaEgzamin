@@ -20,12 +20,15 @@ export default function GaleriaRyb() {
   const [shuffled, setShuffled] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
+  const [revealAll, setRevealAll] = useState(false)
+
+  const showAnswers = revealAll || revealed
 
   const fish = list[currentIndex]
 
   function goTo(index) {
     setCurrentIndex(index)
-    setRevealed(false)
+    if (!revealAll) setRevealed(false)
     setImageLoaded(false)
   }
 
@@ -120,6 +123,17 @@ export default function GaleriaRyb() {
         <span className={`tryb-value${shuffled ? ' tryb-losowy' : ' tryb-alfa'}`}>
           {shuffled ? '🔀 Losowa kolejność' : '🔤 Alfabetycznie'}
         </span>
+        <label className="reveal-all-label">
+          <input
+            type="checkbox"
+            checked={revealAll}
+            onChange={(e) => {
+              setRevealAll(e.target.checked)
+              if (!e.target.checked) setRevealed(false)
+            }}
+          />
+          Wszystkie odpowiedzi odkryte
+        </label>
       </div>
       <p className="galeria-subtitle">
         Kliknij na zdjęcie, aby odkryć odpowiedzi.
@@ -128,9 +142,9 @@ export default function GaleriaRyb() {
       <div className="galeria-card">
         {/* Fish image / placeholder */}
         <div
-          className={`fish-image-wrapper${revealed ? ' revealed' : ''}`}
-          onClick={() => setRevealed((r) => !r)}
-          title={revealed ? 'Kliknij, aby ukryć' : 'Kliknij, aby odkryć odpowiedzi'}
+          className={`fish-image-wrapper${showAnswers ? ' revealed' : ''}`}
+          onClick={() => !revealAll && setRevealed((r) => !r)}
+          title={revealAll ? '' : showAnswers ? 'Kliknij, aby ukryć' : 'Kliknij, aby odkryć odpowiedzi'}
         >
           {fish.image ? (
             <>
@@ -156,7 +170,7 @@ export default function GaleriaRyb() {
             </div>
           )}
           <div className="fish-image-hint">
-            {revealed ? '🔼 Ukryj odpowiedzi' : '🔽 Odkryj odpowiedzi'}
+            {revealAll ? null : showAnswers ? '🔼 Ukryj odpowiedzi' : '🔽 Odkryj odpowiedzi'}
           </div>
         </div>
 
@@ -164,7 +178,7 @@ export default function GaleriaRyb() {
         <div className="fish-questions">
           <div className="question-row">
             <span className="question-label">Jak nazywa się ta ryba?</span>
-            {revealed && (
+            {showAnswers && (
               <div className="answer-block">
                 <span className="answer">{fish.name}</span>
                 <span className="answer-latin">{fish.nazwaLacinska}</span>
@@ -173,14 +187,14 @@ export default function GaleriaRyb() {
           </div>
           <div className="question-row">
             <span className="question-label">Jaki jest okres ochronny tej ryby?</span>
-            {revealed && <span className="answer">{fish.okresOchronny}</span>}
+            {showAnswers && <span className="answer">{fish.okresOchronny}</span>}
           </div>
           <div className="question-row">
             <span className="question-label">Poniżej jakiego rozmiaru rybę należy wypuścić?</span>
-            {revealed && <span className="answer">{fish.wymiarOchronny}</span>}
+            {showAnswers && <span className="answer">{fish.wymiarOchronny}</span>}
           </div>
 
-          {revealed && fish.informacjeDodatkowe && (
+          {showAnswers && fish.informacjeDodatkowe && (
             <div className="informacje-dodatkowe">
               <span className="informacje-label">Informacje dodatkowe</span>
               <p className="informacje-text">{fish.informacjeDodatkowe}</p>
