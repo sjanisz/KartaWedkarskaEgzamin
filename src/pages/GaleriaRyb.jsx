@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import fishes from '../data/fishes'
 import './GaleriaRyb.css'
 
@@ -19,8 +19,10 @@ export default function GaleriaRyb() {
   const [revealed, setRevealed] = useState(false)
   const [shuffled, setShuffled] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarDocked, setSidebarDocked] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [revealAll, setRevealAll] = useState(false)
+  const activeItemRef = useRef(null)
 
   const showAnswers = revealAll || revealed
 
@@ -46,6 +48,12 @@ export default function GaleriaRyb() {
   }
 
   useEffect(() => {
+    if (activeItemRef.current) {
+      activeItemRef.current.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    }
+  }, [currentIndex])
+
+  useEffect(() => {
     function handleKey(e) {
       if (e.key === 'ArrowLeft') goPrev()
       if (e.key === 'ArrowRight') goNext()
@@ -66,14 +74,22 @@ export default function GaleriaRyb() {
   }
 
   return (
-    <div className="galeria-page">
+    <div className={`galeria-page${sidebarDocked && sidebarOpen ? ' docked' : ''}`}>
 
       {/* Side panel */}
-      <div className={`galeria-sidebar${sidebarOpen ? ' open' : ''}`}>
+      <div className={`galeria-sidebar${sidebarOpen ? ' open' : ''}${sidebarDocked ? ' docked' : ''}`}>
         <div className="sidebar-inner">
           <div className="sidebar-header">
             <span className="sidebar-title">Wszystkie ryby ({sortedAlpha.length})</span>
-            <button className="sidebar-close" onClick={() => setSidebarOpen(false)} aria-label="Zamknij panel">✕</button>
+            <label className="sidebar-dock-label">
+              <input
+                type="checkbox"
+                checked={sidebarDocked}
+                onChange={(e) => setSidebarDocked(e.target.checked)}
+              />
+              Przypnij
+            </label>
+            <button className="sidebar-close" onClick={() => { setSidebarOpen(false); setSidebarDocked(false) }} aria-label="Zamknij panel">✕</button>
           </div>
           <ul className="sidebar-list">
             {sortedAlpha.map((f) => {
@@ -82,6 +98,7 @@ export default function GaleriaRyb() {
               return (
                 <li
                   key={f.id}
+                  ref={isActive ? activeItemRef : null}
                   className={`sidebar-item${isActive ? ' active' : ''}`}
                   onClick={() => goToById(f.id)}
                 >
@@ -100,14 +117,15 @@ export default function GaleriaRyb() {
 
       {/* Sidebar toggle tab */}
       <button
-        className={`sidebar-toggle-tab${sidebarOpen ? ' open' : ''}`}
-        onClick={() => setSidebarOpen(s => !s)}
+        className={`sidebar-toggle-tab${sidebarOpen ? ' open' : ''}${sidebarDocked && sidebarOpen ? ' docked' : ''}`}
+        onClick={() => { if (sidebarOpen) { setSidebarOpen(false); setSidebarDocked(false) } else { setSidebarOpen(true) } }}
         title={sidebarOpen ? 'Zamknij listę ryb' : 'Otwórz listę ryb'}
       >
-        {sidebarOpen ? '▶' : '◀'}
+        <span className="sidebar-tab-arrow">{sidebarOpen ? '▶' : '◀'}</span>
+        <span className="sidebar-tab-text">Lista wszystkich ryb</span>
       </button>
 
-      <div className="galeria-container">
+      <div className={`galeria-container${sidebarDocked && sidebarOpen ? ' docked' : ''}`}>
       <div className="galeria-header">
         <h1 className="galeria-title">Galeria Ryb</h1>
         <button
@@ -215,6 +233,7 @@ export default function GaleriaRyb() {
           Następna &#8594;
         </button>
       </div>
+      <p className="keyboard-hint">Możesz też nawigować strzałkami &#8592; &#8594; na klawiaturze</p>
 
       {/* Dot indicators */}
       <div className="galeria-dots">

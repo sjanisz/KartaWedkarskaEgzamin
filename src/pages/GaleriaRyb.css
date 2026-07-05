@@ -2,6 +2,19 @@
   position: relative;
 }
 
+.galeria-page.docked {
+  display: flex;
+  align-items: flex-start;
+}
+
+.galeria-page.docked .galeria-container {
+  order: 1;
+}
+
+.galeria-page.docked .galeria-sidebar {
+  order: 2;
+}
+
 .galeria-container {
   max-width: 640px;
   margin: 2.5rem auto;
@@ -10,6 +23,12 @@
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+}
+
+.galeria-container.docked {
+  flex: 1;
+  min-width: 0;
+  max-width: 640px;
 }
 
 .galeria-header {
@@ -290,6 +309,13 @@
   text-align: center;
 }
 
+.keyboard-hint {
+  font-size: 0.9rem;
+  color: #5a7f8f;
+  text-align: center;
+  margin-top: -0.75rem;
+}
+
 /* Dots */
 .galeria-dots {
   display: flex;
@@ -330,12 +356,28 @@
   width: 50vw;
 }
 
+.galeria-sidebar.docked {
+  position: sticky;
+  top: 0;
+  height: calc(100vh - 60px);
+  flex-shrink: 0;
+  box-shadow: -4px 0 24px rgba(26, 107, 154, 0.18);
+}
+
+.galeria-sidebar.docked.open {
+  width: 50%;
+}
+
 .sidebar-inner {
   width: 50vw;
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+.galeria-sidebar.docked .sidebar-inner {
+  width: 100%;
 }
 
 .sidebar-header {
@@ -423,6 +465,25 @@
   color: #4a7a9a;
 }
 
+.sidebar-dock-label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.9);
+  cursor: pointer;
+  user-select: none;
+  margin-left: auto;
+  margin-right: 0.75rem;
+}
+
+.sidebar-dock-label input[type='checkbox'] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: #fff;
+}
+
 /* Sidebar toggle tab */
 .sidebar-toggle-tab {
   position: fixed;
@@ -433,17 +494,37 @@
   color: #fff;
   border: none;
   cursor: pointer;
-  padding: 1.1rem 0.5rem;
+  padding: 1rem 0.65rem;
   border-radius: 8px 0 0 8px;
-  font-size: 0.95rem;
   line-height: 1;
   z-index: 101;
   transition: right 0.3s ease, background 0.2s;
   box-shadow: -2px 0 8px rgba(26, 107, 154, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebar-tab-arrow {
+  font-size: 1.5rem;
+}
+
+.sidebar-tab-text {
+  font-size: 1rem;
+  font-weight: 100;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .sidebar-toggle-tab.open {
   right: 50vw;
+}
+
+.sidebar-toggle-tab.open.docked {
+  right: 50%;
 }
 
 .sidebar-toggle-tab:hover {
